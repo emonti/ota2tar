@@ -455,6 +455,8 @@ int main(int argc, char * argv[])
                     if (pbzx_data) {
                         pbzx_done = extract_pbzx(pbzx_data, st.st_size, ota_fd);
                         munmap(pbzx_data, st.st_size);
+                    } else {
+                        error_msg("mmap failed: %s\n", strerror(errno));
                     }
                 } else {
                     error_msg("Not a file: %s\n", infile);
@@ -490,6 +492,8 @@ int main(int argc, char * argv[])
                     if (ota_data) {
                         ota_done = extract_ota(ota_data, st.st_size, ar_out);
                         munmap(ota_data, st.st_size);
+                    } else {
+                        error_msg("mmap failed: %s\n", strerror(errno));
                     }
                 } else {
                     error_msg("Not a file: %s\n", ota_outfile);
