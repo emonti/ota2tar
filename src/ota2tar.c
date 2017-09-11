@@ -326,7 +326,7 @@ static bool extract_pbzx(const void *pbzx_data, size_t pbzx_size, int outfd)
             uint64_t written = 0;
             while ((p+written) < chunk_tail) {
                 size_t wlen = (written < SIZE_T_MAX)? written : SIZE_T_MAX;
-                ssize_t n = write(outfd, (p+written), (size_t)length - written);
+                ssize_t n = write(outfd, (p+written), wlen);
                 assert(n > 1);
                 written += n;
             }
