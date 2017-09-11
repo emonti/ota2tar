@@ -322,9 +322,9 @@ static bool extract_pbzx(const void *pbzx_data, size_t pbzx_size, int outfd)
                 return false;
             }
         } else {
+            verbose_msg("Non-XZ chunk detected #%d @0x%zx (written as is to file)\n", chunk_idx, (p - pbzx_data));
             uint64_t written = 0;
             while ((p+written) < chunk_tail) {
-                verbose_msg("Non-XZ chunk detected #%d @0x%zx (written as is to file)\n", chunk_idx, (p - pbzx_data));
                 size_t wlen = (written < SIZE_T_MAX)? written : SIZE_T_MAX;
                 ssize_t n = write(outfd, (p+written), (size_t)length - written);
                 assert(n > 1);
