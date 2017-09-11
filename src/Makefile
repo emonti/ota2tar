@@ -11,4 +11,4 @@ ota2tar: ota2tar.o
 
 
 clean:
-	rm ota2tar *.o
+	rm -f ota2tar *.o
