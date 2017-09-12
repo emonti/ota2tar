@@ -308,11 +308,9 @@ static bool extract_pbzx(const void *pbzx_data, size_t pbzx_size, int outfd)
             error_msg("Chunk length out of bounds: %lld bytes?", length);
         }
 
-        const void *chunk_tail = p + length;
-
         bool is_xz_chunk = (memcmp(p, XZ_HEAD_MAGIC, sizeof(XZ_HEAD_MAGIC)-1) == 0);
         if (is_xz_chunk) {
-            const void *xz_tail = chunk_tail - 2;
+            const void *xz_tail = (p + length) - 2;
             if (memcmp(xz_tail, XZ_TAIL_MAGIC, sizeof(XZ_TAIL_MAGIC)-1) != 0) {
                 error_msg("Expected XZ trailer magic at offset 0x%zx\n", (xz_tail - pbzx_data));
                 return false;
@@ -324,8 +322,8 @@ static bool extract_pbzx(const void *pbzx_data, size_t pbzx_size, int outfd)
         } else {
             verbose_msg("Non-XZ chunk detected #%d @0x%zx (written as is to file)\n", chunk_idx, (p - pbzx_data));
             uint64_t written = 0;
-            while ((p+written) < chunk_tail) {
-                size_t wlen = (written < SIZE_T_MAX)? written : SIZE_T_MAX;
+            while (written < length) {
+                size_t wlen = ((length-written) < SIZE_T_MAX)? (length-written) : SIZE_T_MAX;
                 ssize_t n = write(outfd, (p+written), wlen);
                 assert(n > 1);
                 written += n;
